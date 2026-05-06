@@ -1,0 +1,81 @@
+{
+  "identifier" : "E1A2B3C4-D5E6-F7A8-B9C0-D1E2F3A4B5C6",
+  "nonConsumableProducts" : [],
+  "consumableProducts" : [],
+  "subscriptionGroups" : [
+    {
+      "id" : "AA11BB22-CC33-DD44-EE55-FF6677889900",
+      "localizations" : [],
+      "name" : "Recipe Extractor Plans",
+      "subscriptions" : [
+        {
+          "adHocOffers" : [],
+          "codeOffers" : [],
+          "displayPrice" : "4.99",
+          "familyShareable" : false,
+          "groupNumber" : 1,
+          "internalID" : "11111111-1111-1111-1111-111111111111",
+          "introductoryOffer" : null,
+          "localizations" : [
+            {
+              "description" : "10 recipe extractions per month and save your recipe library.",
+              "displayName" : "Premium Monthly",
+              "locale" : "en_US"
+            }
+          ],
+          "productID" : "com.recipeextractor.premium.monthly",
+          "recurringSubscriptionPeriod" : "P1M",
+          "referenceName" : "Premium Monthly",
+          "subscriptionGroupID" : "AA11BB22-CC33-DD44-EE55-FF6677889900",
+          "type" : "RecurringSubscription"
+        },
+        {
+          "adHocOffers" : [],
+          "codeOffers" : [],
+          "displayPrice" : "9.99",
+          "familyShareable" : false,
+          "groupNumber" : 2,
+          "internalID" : "22222222-2222-2222-2222-222222222222",
+          "introductoryOffer" : null,
+          "localizations" : [
+            {
+              "description" : "Unlimited recipe extractions and unlimited saved recipes.",
+              "displayName" : "Pro Monthly",
+              "locale" : "en_US"
+            }
+          ],
+          "productID" : "com.recipeextractor.pro.monthly",
+          "recurringSubscriptionPeriod" : "P1M",
+          "referenceName" : "Pro Monthly",
+          "subscriptionGroupID" : "AA11BB22-CC33-DD44-EE55-FF6677889900",
+          "type" : "RecurringSubscription"
+        },
+        {
+          "adHocOffers" : [],
+          "codeOffers" : [],
+          "displayPrice" : "99.99",
+          "familyShareable" : false,
+          "groupNumber" : 3,
+          "internalID" : "33333333-3333-3333-3333-333333333333",
+          "introductoryOffer" : null,
+          "localizations" : [
+            {
+              "description" : "Unlimited extractions and saves — billed annually.",
+              "displayName" : "Pro Yearly",
+              "locale" : "en_US"
+            }
+          ],
+          "productID" : "com.recipeextractor.pro.yearly",
+          "recurringSubscriptionPeriod" : "P1Y",
+          "referenceName" : "Pro Yearly",
+          "subscriptionGroupID" : "AA11BB22-CC33-DD44-EE55-FF6677889900",
+          "type" : "RecurringSubscription"
+        }
+      ]
+    }
+  ],
+  "version" : {
+    "major" : 2,
+    "minor" : 0
+  }
+}
