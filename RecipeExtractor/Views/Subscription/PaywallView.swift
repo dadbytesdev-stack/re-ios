@@ -11,6 +11,16 @@ struct PaywallView: View {
     @State private var errorMessage: String?
     @State private var successMessage: String?
 
+    private var selectedProduct: Product? {
+        storeKit.products.first { $0.id == selectedProductId }
+    }
+
+    /// Lifetime is a non-consumable, not a subscription: the call to action,
+    /// and the renewal terms below it, have to change accordingly.
+    private var selectionIsOneTime: Bool {
+        selectedProduct?.type == .nonConsumable
+    }
+
     var body: some View {
         NavigationStack {
             ScrollView {
@@ -22,7 +32,7 @@ struct PaywallView: View {
                             .foregroundStyle(.orange)
                         Text("Upgrade Your Plan")
                             .font(.title.bold())
-                        Text("Extract and save as many recipes as you like")
+                        Text("You're on \(authService.currentUser?.tier.displayName ?? "Free") — here's what more looks like")
                             .font(.subheadline)
                             .foregroundStyle(.secondary)
                             .multilineTextAlignment(.center)
@@ -31,15 +41,32 @@ struct PaywallView: View {
 
                     // Feature highlights
                     VStack(alignment: .leading, spacing: 12) {
-                        FeatureRow(icon: "wand.and.stars", text: "Unlimited recipe extractions")
-                        FeatureRow(icon: "bookmark.fill", text: "Save your recipe library")
-                        FeatureRow(icon: "arrow.clockwise", text: "Access past extractions")
-                        FeatureRow(icon: "star.fill", text: "Priority support")
+                        FeatureRow(icon: "wand.and.stars",
+                                   text: "Premium: \(SubscriptionTier.premium.monthlyLimit ?? 0) extractions a month")
+                        FeatureRow(icon: "infinity",
+                                   text: "Pro: unlimited extractions, billed monthly")
+                        FeatureRow(icon: "checkmark.seal.fill",
+                                   text: "Lifetime: unlimited forever, paid once")
+                        FeatureRow(icon: "bookmark.fill",
+                                   text: "Every plan saves your recipe library")
                     }
                     .padding(.horizontal, 32)
 
                     // Products
-                    if storeKit.products.isEmpty {
+                    if storeKit.hasLifetime {
+                        // Nothing left to sell someone who bought the
+                        // permanent unlock.
+                        VStack(spacing: 8) {
+                            Image(systemName: "checkmark.seal.fill")
+                                .font(.largeTitle).foregroundStyle(.green)
+                            Text("You have Lifetime access")
+                                .font(.headline)
+                            Text("Unlimited extractions, forever. Nothing to renew.")
+                                .font(.subheadline).foregroundStyle(.secondary)
+                                .multilineTextAlignment(.center)
+                        }
+                        .padding(.horizontal, 32)
+                    } else if storeKit.products.isEmpty {
                         ProgressView().padding()
                     } else {
                         VStack(spacing: 12) {
@@ -67,6 +94,7 @@ struct PaywallView: View {
 
                     // CTA
                     VStack(spacing: 10) {
+                        if !storeKit.hasLifetime {
                         Button { Task { await purchaseSelected() } } label: {
                             ZStack {
                                 RoundedRectangle(cornerRadius: 14)
@@ -74,20 +102,24 @@ struct PaywallView: View {
                                 if isLoading {
                                     ProgressView().tint(.white)
                                 } else {
-                                    Text("Subscribe Now").font(.headline).foregroundStyle(.white)
+                                    Text(selectionIsOneTime ? "Buy Lifetime Access" : "Subscribe Now")
+                                        .font(.headline).foregroundStyle(.white)
                                 }
                             }
                             .frame(maxWidth: .infinity).frame(height: 54)
                         }
                         .disabled(isLoading || selectedProductId == nil)
                         .padding(.horizontal)
+                        }
 
                         Button("Restore Purchases") { Task { await restorePurchases() } }
                             .font(.subheadline).foregroundStyle(.secondary)
                     }
 
                     VStack(spacing: 6) {
-                        Text("Subscriptions renew automatically until canceled. Cancel anytime in the App Store at least 24 hours before the end of the current period. Payment is charged to your Apple ID account at confirmation of purchase.")
+                        Text(selectionIsOneTime
+                             ? "Lifetime access is a one-time purchase charged to your Apple ID at confirmation. It does not renew and there is nothing to cancel."
+                             : "Subscriptions renew automatically until canceled. Cancel anytime in the App Store at least 24 hours before the end of the current period. Payment is charged to your Apple ID account at confirmation of purchase.")
                             .font(.caption2).foregroundStyle(.tertiary)
                             .multilineTextAlignment(.center)
 
@@ -131,7 +163,9 @@ struct PaywallView: View {
                 productId: id
             )
             authService.updateTier(tier)
-            successMessage = "You now have \(tier.displayName) access!"
+            successMessage = tier == .lifetime
+                ? "Lifetime access unlocked — enjoy!"
+                : "You now have \(tier.displayName) access!"
             try? await Task.sleep(nanoseconds: 1_500_000_000)
             dismiss()
         } catch let error as AppError {
@@ -181,6 +215,12 @@ private struct ProductCard: View {
     let isSelected: Bool
     let onSelect: () -> Void
     private var isYearly: Bool { product.id.contains("yearly") }
+    private var isOneTime: Bool { product.type == .nonConsumable }
+
+    private var periodLabel: String {
+        if isOneTime { return "one time" }
+        return isYearly ? "/ year" : "/ month"
+    }
 
     var body: some View {
         Button(action: onSelect) {
@@ -194,13 +234,19 @@ private struct ProductCard: View {
                                 .background(Color.green.opacity(0.15)).foregroundStyle(.green)
                                 .clipShape(Capsule())
                         }
+                        if isOneTime {
+                            Text("BEST VALUE").font(.caption2.bold())
+                                .padding(.horizontal, 6).padding(.vertical, 2)
+                                .background(Color.orange.opacity(0.15)).foregroundStyle(.orange)
+                                .clipShape(Capsule())
+                        }
                     }
                     Text(product.description).font(.caption).foregroundStyle(.secondary)
                 }
                 Spacer()
                 VStack(alignment: .trailing, spacing: 2) {
                     Text(product.displayPrice).font(.headline)
-                    Text(isYearly ? "/ year" : "/ month").font(.caption).foregroundStyle(.secondary)
+                    Text(periodLabel).font(.caption).foregroundStyle(.secondary)
                 }
             }
             .padding(16)

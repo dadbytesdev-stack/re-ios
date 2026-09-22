@@ -7,11 +7,36 @@ final class StoreKitService: ObservableObject {
     @Published var purchasedProductIds: Set<String> = []
     @Published var isLoading = false
 
+    /// Non-consumable: bought once, never expires.
+    static let lifetimeProductId = "com.recipeextractor.lifetime"
+
+    /// Products offered on the paywall, cheapest first.
+    ///
+    /// com.recipeextractor.pro.yearly is deliberately absent — it is no longer
+    /// sold now that Lifetime exists. Anyone already on it keeps it: removing a
+    /// product from this list only stops it being offered, it does not revoke
+    /// an active subscription, and `entitlementPriority` below still ranks it.
     static let productIds: Set<String> = [
         "com.recipeextractor.premium.monthly",
         "com.recipeextractor.pro.monthly",
-        "com.recipeextractor.pro.yearly"
+        lifetimeProductId
     ]
+
+    /// Higher wins when someone holds more than one entitlement — a lifetime
+    /// buyer who also has a lapsing subscription must be reported as Lifetime,
+    /// not downgraded to whatever Transaction.currentEntitlements yields first.
+    private static func entitlementPriority(_ productId: String) -> Int {
+        switch productId {
+        case lifetimeProductId: return 3
+        case "com.recipeextractor.pro.monthly", "com.recipeextractor.pro.yearly": return 2
+        case "com.recipeextractor.premium.monthly": return 1
+        default: return 0
+        }
+    }
+
+    /// True once the lifetime unlock has been purchased. Drives the paywall,
+    /// which must not offer a one-time purchase to someone who already owns it.
+    var hasLifetime: Bool { purchasedProductIds.contains(Self.lifetimeProductId) }
 
     private var updateListenerTask: Task<Void, Error>?
 
@@ -59,17 +84,23 @@ final class StoreKitService: ObservableObject {
         await updatePurchasedProducts()
     }
 
-    /// The current, verified entitlement (if any) as a JWS the backend can
-    /// re-verify on restore. We pick the first verified, non-revoked
-    /// transaction in `Transaction.currentEntitlements` — fine for a
-    /// single-subscription-group app like this one.
+    /// The best current entitlement as a JWS the backend can re-verify on
+    /// restore.
+    ///
+    /// `Transaction.currentEntitlements` has no defined order, so with both a
+    /// lifetime unlock and a subscription present, taking the first match
+    /// could restore the lesser of the two. Rank them and send the highest.
     func currentEntitlementJWS() async -> (productId: String, jws: String)? {
+        var best: (productId: String, jws: String, rank: Int)?
         for await result in Transaction.currentEntitlements {
-            if case .verified(let tx) = result, tx.revocationDate == nil {
-                return (tx.productID, result.jwsRepresentation)
+            guard case .verified(let tx) = result, tx.revocationDate == nil else { continue }
+            let rank = Self.entitlementPriority(tx.productID)
+            if best == nil || rank > best!.rank {
+                best = (tx.productID, result.jwsRepresentation, rank)
             }
         }
-        return nil
+        guard let best else { return nil }
+        return (best.productId, best.jws)
     }
 
     func updatePurchasedProducts() async {
