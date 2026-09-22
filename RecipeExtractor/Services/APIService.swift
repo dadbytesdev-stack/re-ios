@@ -27,10 +27,39 @@ final class APIService {
             request.httpBody = try? JSONSerialization.data(withJSONObject: body)
         }
 
-        let (data, response) = try await URLSession.shared.data(for: request)
+        #if DEBUG
+        print("➡️ \(method) \(url.absoluteString)")
+        if let body, let bodyData = try? JSONSerialization.data(withJSONObject: body),
+           let bodyStr = String(data: bodyData, encoding: .utf8) {
+            // Redact password in logs
+            let redacted = bodyStr.replacingOccurrences(
+                of: #""password":\s*"[^"]*""#,
+                with: "\"password\":\"***\"",
+                options: .regularExpression
+            )
+            print("   body: \(redacted)")
+        }
+        #endif
+
+        let data: Data
+        let response: URLResponse
+        do {
+            (data, response) = try await URLSession.shared.data(for: request)
+        } catch {
+            #if DEBUG
+            print("❌ URLSession error: \(error.localizedDescription)")
+            #endif
+            throw AppError.networkError(error.localizedDescription)
+        }
+
         guard let http = response as? HTTPURLResponse else {
             throw AppError.networkError("Invalid response")
         }
+
+        #if DEBUG
+        let bodyPreview = String(data: data, encoding: .utf8)?.prefix(500) ?? ""
+        print("⬅️ \(http.statusCode) \(url.path) — \(bodyPreview)")
+        #endif
 
         switch http.statusCode {
         case 200..<300:
@@ -47,11 +76,23 @@ final class APIService {
             }
             throw AppError.requiresUpgrade("Upgrade required")
         default:
-            if let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
-               let error = json["error"] as? String {
-                throw AppError.serverError(error)
+            // Try to surface a useful message from the server's response body.
+            if let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any] {
+                let msg = (json["error"] as? String)
+                    ?? (json["message"] as? String)
+                    ?? (json["msg"] as? String)
+                if let msg, !msg.isEmpty {
+                    throw AppError.serverError("\(msg) (\(http.statusCode))")
+                }
             }
-            throw AppError.serverError("Request failed (\(http.statusCode))")
+            // Fallback: include a snippet of the raw body so you can see what came back.
+            let raw = String(data: data, encoding: .utf8) ?? ""
+            let snippet = raw.trimmingCharacters(in: .whitespacesAndNewlines).prefix(160)
+            if snippet.isEmpty {
+                throw AppError.serverError("Request failed (\(http.statusCode))")
+            } else {
+                throw AppError.serverError("Request failed (\(http.statusCode)): \(snippet)")
+            }
         }
     }
 
