@@ -1,6 +1,7 @@
 {
   "identifier": "E1A2B3C4-D5E6-F7A8-B9C0-D1E2F3A4B5C6",
-  "nonConsumableProducts": [
+  "nonRenewingSubscriptions": [],
+  "products": [
     {
       "displayPrice": "49.99",
       "familyShareable": false,
@@ -17,7 +18,11 @@
       "type": "NonConsumable"
     }
   ],
-  "consumableProducts": [],
+  "settings": {
+    "_applicationInternalID": "",
+    "_developerTeamID": "",
+    "_lastSynchronizedDate": 0
+  },
   "subscriptionGroups": [
     {
       "id": "AA11BB22-CC33-DD44-EE55-FF6677889900",
@@ -91,7 +96,7 @@
     }
   ],
   "version": {
-    "major": 2,
+    "major": 3,
     "minor": 0
   }
 }

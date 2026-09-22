@@ -34,6 +34,7 @@
 		CE00000000000000000000A2 /* SignInPromptView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE00000000000000000000A3 /* SignInPromptView.swift */; };
 		CE0000000000000000000067 /* UsageBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE000000000000000000003A /* UsageBarView.swift */; };
 		CE0000000000000000000070 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CE0000000000000000000025 /* Assets.xcassets */; };
+		CE00000000000000000000A4 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = CE00000000000000000000A5 /* PrivacyInfo.xcprivacy */; };
 		CE0000000000000000000071 /* Products.storekit in Resources */ = {isa = PBXBuildFile; fileRef = CE000000000000000000003B /* Products.storekit */; };
 		CE0000000000000000000080 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE000000000000000000003D /* StoreKit.framework */; };
 /* End PBXBuildFile section */
@@ -69,6 +70,7 @@
 		CE00000000000000000000A3 /* SignInPromptView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInPromptView.swift; sourceTree = "<group>"; };
 		CE000000000000000000003A /* UsageBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsageBarView.swift; sourceTree = "<group>"; };
 		CE000000000000000000003B /* Products.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = Products.storekit; sourceTree = "<group>"; };
+		CE00000000000000000000A5 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		CE000000000000000000003C /* RecipeExtractor.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RecipeExtractor.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CE000000000000000000003D /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
@@ -105,6 +107,7 @@
 				CE0000000000000000000016 /* Views */,
 				CE0000000000000000000025 /* Assets.xcassets */,
 				CE000000000000000000003B /* Products.storekit */,
+				CE00000000000000000000A5 /* PrivacyInfo.xcprivacy */,
 				CE0000000000000000000023 /* Info.plist */,
 				CE0000000000000000000024 /* RecipeExtractor.entitlements */,
 			);
@@ -295,6 +298,7 @@
 			files = (
 				CE0000000000000000000070 /* Assets.xcassets in Resources */,
 				CE0000000000000000000071 /* Products.storekit in Resources */,
+				CE00000000000000000000A4 /* PrivacyInfo.xcprivacy in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -462,7 +466,7 @@
 				CODE_SIGN_ENTITLEMENTS = RecipeExtractor/RecipeExtractor.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 4;
 				DEVELOPMENT_ASSET_PATHS = "\"RecipeExtractor/Products.storekit\"";
 				DEVELOPMENT_TEAM = Z7Q5NZT4ZL;
 				GENERATE_INFOPLIST_FILE = NO;
@@ -495,7 +499,7 @@
 				CODE_SIGN_ENTITLEMENTS = RecipeExtractor/RecipeExtractor.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 4;
 				DEVELOPMENT_ASSET_PATHS = "\"RecipeExtractor/Products.storekit\"";
 				DEVELOPMENT_TEAM = Z7Q5NZT4ZL;
 				GENERATE_INFOPLIST_FILE = NO;

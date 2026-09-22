@@ -40,13 +40,12 @@ targets:
         GENERATE_INFOPLIST_FILE: "NO"
         CODE_SIGN_ENTITLEMENTS: RecipeExtractor/RecipeExtractor.entitlements
 
-        # Version strings. Note CFBundleVersion is hardcoded in Info.plist,
-        # so CURRENT_PROJECT_VERSION does not reach the built bundle today —
-        # every archive so far has come out as build 1. Bump the Info.plist
-        # value (or switch it to $(CURRENT_PROJECT_VERSION)) before the next
-        # upload, or App Store Connect will reject it as a duplicate build.
+        # Version strings. Info.plist sets CFBundleVersion to
+        # $(CURRENT_PROJECT_VERSION), so the build number is driven from here.
+        # Bump CURRENT_PROJECT_VERSION for every upload — App Store Connect
+        # rejects a build number it has already seen.
         MARKETING_VERSION: "1.0"
-        CURRENT_PROJECT_VERSION: "3"
+        CURRENT_PROJECT_VERSION: "4"
 
         # Signing. Team ID is required here — leaving it blank produces an
         # unsigned project that cannot archive.
