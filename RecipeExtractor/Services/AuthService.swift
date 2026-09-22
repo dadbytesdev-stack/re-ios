@@ -49,6 +49,20 @@ final class AuthService: ObservableObject {
         isAuthenticated = false
     }
 
+    /// Permanently deletes the user's account on the server and then clears
+    /// all local credentials. Required by App Store Review Guideline 5.1.1(v).
+    /// On any error the local session is left intact so the user can retry.
+    func deleteAccount() async throws {
+        isLoading = true
+        defer { isLoading = false }
+        try await api.deleteAccount()
+        // Server deletion succeeded — fully wipe the local session.
+        keychain.deleteToken()
+        UserDefaults.standard.removeObject(forKey: "currentUser")
+        currentUser = nil
+        isAuthenticated = false
+    }
+
     func refreshUser() async {
         guard let usage = try? await api.getUsage() else { return }
         currentUser?.tier = usage.tier

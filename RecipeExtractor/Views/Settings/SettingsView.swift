@@ -8,6 +8,9 @@ struct SettingsView: View {
     @State private var showSignOutConfirm = false
     @State private var isRestoring = false
     @State private var restoreMessage: String?
+    @State private var showDeleteAccountConfirm = false
+    @State private var isDeletingAccount = false
+    @State private var deleteAccountError: String?
 
     var body: some View {
         NavigationStack {
@@ -76,8 +79,8 @@ struct SettingsView: View {
                 // App section
                 Section("App") {
                     LabeledContent("Version", value: Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "1.0")
-                    Link("Privacy Policy", destination: URL(string: "https://re-flax.vercel.app/privacy")!)
-                    Link("Terms of Service", destination: URL(string: "https://re-flax.vercel.app/terms")!)
+                    Link("Privacy Policy", destination: URL(string: "https://www.dadbytes.app/data-privacy")!)
+                    Link("Terms of Service", destination: URL(string: "https://www.dadbytes.app/terms")!)
                 }
 
                 // Sign out
@@ -87,6 +90,31 @@ struct SettingsView: View {
                     } label: {
                         Label("Sign Out", systemImage: "rectangle.portrait.and.arrow.right")
                     }
+                }
+
+                // Delete account — required by App Store Review Guideline 5.1.1(v).
+                Section {
+                    Button(role: .destructive) {
+                        deleteAccountError = nil
+                        showDeleteAccountConfirm = true
+                    } label: {
+                        HStack {
+                            Label("Delete Account", systemImage: "trash")
+                            if isDeletingAccount {
+                                Spacer()
+                                ProgressView()
+                            }
+                        }
+                    }
+                    .disabled(isDeletingAccount)
+
+                    if let error = deleteAccountError {
+                        Text(error)
+                            .font(.caption)
+                            .foregroundStyle(.red)
+                    }
+                } footer: {
+                    Text("Permanently deletes your account and all saved recipes. This cannot be undone. If you have an active subscription, cancel it in Settings → Apple ID → Subscriptions before deleting.")
                 }
             }
             .navigationTitle("Account")
@@ -98,8 +126,32 @@ struct SettingsView: View {
             } message: {
                 Text("You'll need to sign in again to access your recipes.")
             }
+            .alert("Delete Account?", isPresented: $showDeleteAccountConfirm) {
+                Button("Cancel", role: .cancel) {}
+                Button("Delete", role: .destructive) {
+                    Task { await deleteAccount() }
+                }
+            } message: {
+                Text("This permanently deletes your account, all saved recipes, and your extraction history. This action cannot be undone.")
+            }
             .task { await loadUsage() }
             .refreshable { await loadUsage() }
+        }
+    }
+
+    private func deleteAccount() async {
+        isDeletingAccount = true
+        deleteAccountError = nil
+        defer { isDeletingAccount = false }
+        do {
+            try await authService.deleteAccount()
+            // AuthService clears its own session state on success; the root
+            // view will react to isAuthenticated = false and route the user
+            // back to the auth flow.
+        } catch let error as AppError {
+            deleteAccountError = error.localizedDescription
+        } catch {
+            deleteAccountError = "Couldn't delete account: \(error.localizedDescription)"
         }
     }
 

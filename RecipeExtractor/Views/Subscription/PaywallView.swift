@@ -86,9 +86,23 @@ struct PaywallView: View {
                             .font(.subheadline).foregroundStyle(.secondary)
                     }
 
-                    Text("Subscriptions renew automatically. Cancel anytime in the App Store.")
-                        .font(.caption2).foregroundStyle(.tertiary)
-                        .multilineTextAlignment(.center).padding(.horizontal, 32).padding(.bottom, 24)
+                    VStack(spacing: 6) {
+                        Text("Subscriptions renew automatically until canceled. Cancel anytime in the App Store at least 24 hours before the end of the current period. Payment is charged to your Apple ID account at confirmation of purchase.")
+                            .font(.caption2).foregroundStyle(.tertiary)
+                            .multilineTextAlignment(.center)
+
+                        HStack(spacing: 4) {
+                            Link("Terms of Use",
+                                 destination: URL(string: "https://www.dadbytes.app/terms")!)
+                            Text("and").foregroundStyle(.tertiary)
+                            Link("Privacy Policy",
+                                 destination: URL(string: "https://www.dadbytes.app/data-privacy")!)
+                        }
+                        .font(.caption2)
+                        .tint(.orange)
+                    }
+                    .padding(.horizontal, 32)
+                    .padding(.bottom, 24)
                 }
             }
             .navigationBarTitleDisplayMode(.inline)

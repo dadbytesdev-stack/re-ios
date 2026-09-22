@@ -68,6 +68,16 @@ final class APIService {
                                   body: ["name": name, "email": email, "password": password])
     }
 
+    /// Permanently deletes the authenticated user's account and all of their
+    /// recipes. Required for compliance with App Store Review Guideline
+    /// 5.1.1(v). The backend cancels any active Stripe subscription on a
+    /// best-effort basis. Apple IAP subscriptions must be canceled by the
+    /// user in their iOS Subscriptions settings — we cannot do that on
+    /// their behalf.
+    func deleteAccount() async throws {
+        _ = try await makeRequest("/api/auth/delete-account", method: "DELETE")
+    }
+
     // MARK: - Usage
 
     func getUsage() async throws -> UsageResponse {
