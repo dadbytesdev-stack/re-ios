@@ -28,12 +28,11 @@ final class SubscriptionViewModel: ObservableObject {
         defer { isLoading = false }
 
         do {
-            guard let _ = try await storeKit.purchase(product) else { return }
-            guard let receiptData = storeKit.getReceiptData() else {
-                errorMessage = "Could not read App Store receipt. Please try restoring purchases."
-                return
-            }
-            let tier = try await api.verifyAppleIAP(receiptData: receiptData, productId: product.id)
+            guard let result = try await storeKit.purchase(product) else { return }
+            let tier = try await api.verifyAppleIAP(
+                signedTransaction: result.jws,
+                productId: product.id
+            )
             authService.updateTier(tier)
             await loadUsage()
             successMessage = "You now have \(tier.displayName) access!"
@@ -52,13 +51,14 @@ final class SubscriptionViewModel: ObservableObject {
 
         do {
             try await storeKit.restorePurchases()
-            guard !storeKit.purchasedProductIds.isEmpty,
-                  let productId = storeKit.purchasedProductIds.first,
-                  let receiptData = storeKit.getReceiptData() else {
+            guard let entitlement = await storeKit.currentEntitlementJWS() else {
                 successMessage = "No active purchases found."
                 return
             }
-            let tier = try await api.verifyAppleIAP(receiptData: receiptData, productId: productId)
+            let tier = try await api.verifyAppleIAP(
+                signedTransaction: entitlement.jws,
+                productId: entitlement.productId
+            )
             authService.updateTier(tier)
             await loadUsage()
             successMessage = "Purchases restored successfully!"

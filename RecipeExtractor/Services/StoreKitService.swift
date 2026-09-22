@@ -31,7 +31,10 @@ final class StoreKitService: ObservableObject {
         }
     }
 
-    func purchase(_ product: Product) async throws -> Transaction? {
+    /// Returns both the unwrapped Transaction (for client-side state) and the
+    /// raw JWS string the backend needs to cryptographically verify the
+    /// purchase with Apple's root CAs.
+    func purchase(_ product: Product) async throws -> (transaction: Transaction, jws: String)? {
         isLoading = true
         defer { isLoading = false }
 
@@ -40,9 +43,10 @@ final class StoreKitService: ObservableObject {
         switch result {
         case .success(let verification):
             let transaction = try checkVerified(verification)
+            let jws = verification.jwsRepresentation
             await updatePurchasedProducts()
             await transaction.finish()
-            return transaction
+            return (transaction, jws)
         case .userCancelled, .pending:
             return nil
         @unknown default:
@@ -55,10 +59,17 @@ final class StoreKitService: ObservableObject {
         await updatePurchasedProducts()
     }
 
-    func getReceiptData() -> String? {
-        guard let url = Bundle.main.appStoreReceiptURL,
-              let data = try? Data(contentsOf: url) else { return nil }
-        return data.base64EncodedString()
+    /// The current, verified entitlement (if any) as a JWS the backend can
+    /// re-verify on restore. We pick the first verified, non-revoked
+    /// transaction in `Transaction.currentEntitlements` — fine for a
+    /// single-subscription-group app like this one.
+    func currentEntitlementJWS() async -> (productId: String, jws: String)? {
+        for await result in Transaction.currentEntitlements {
+            if case .verified(let tx) = result, tx.revocationDate == nil {
+                return (tx.productID, result.jwsRepresentation)
+            }
+        }
+        return nil
     }
 
     func updatePurchasedProducts() async {

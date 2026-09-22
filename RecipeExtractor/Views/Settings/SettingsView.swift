@@ -113,13 +113,14 @@ struct SettingsView: View {
         defer { isRestoring = false }
         do {
             try await storeKit.restorePurchases()
-            guard !storeKit.purchasedProductIds.isEmpty,
-                  let productId = storeKit.purchasedProductIds.first,
-                  let receiptData = storeKit.getReceiptData() else {
+            guard let entitlement = await storeKit.currentEntitlementJWS() else {
                 restoreMessage = "No active purchases found."
                 return
             }
-            let tier = try await APIService.shared.verifyAppleIAP(receiptData: receiptData, productId: productId)
+            let tier = try await APIService.shared.verifyAppleIAP(
+                signedTransaction: entitlement.jws,
+                productId: entitlement.productId
+            )
             authService.updateTier(tier)
             restoreMessage = "Restored \(tier.displayName) successfully!"
             await loadUsage()

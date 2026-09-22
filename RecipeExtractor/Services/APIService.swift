@@ -107,9 +107,14 @@ final class APIService {
 
     // MARK: - Apple IAP
 
-    func verifyAppleIAP(receiptData: String, productId: String) async throws -> SubscriptionTier {
-        let data = try await makeRequest("/api/apple/verify-iap", method: "POST",
-                                        body: ["receiptData": receiptData, "productId": productId])
+    /// Send the StoreKit 2 signed JWS transaction to the backend for
+    /// verification against Apple's root certs. Returns the user's new tier.
+    func verifyAppleIAP(signedTransaction: String, productId: String) async throws -> SubscriptionTier {
+        let data = try await makeRequest(
+            "/api/apple/verify-iap",
+            method: "POST",
+            body: ["signedTransaction": signedTransaction, "productId": productId]
+        )
         struct Wrapper: Codable { let tier: SubscriptionTier }
         return try JSONDecoder().decode(Wrapper.self, from: data).tier
     }

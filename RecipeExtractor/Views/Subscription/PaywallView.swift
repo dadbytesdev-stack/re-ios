@@ -111,12 +111,11 @@ struct PaywallView: View {
         errorMessage = nil
         defer { isLoading = false }
         do {
-            guard let _ = try await storeKit.purchase(product) else { return }
-            guard let receiptData = storeKit.getReceiptData() else {
-                errorMessage = "Could not read receipt. Try restoring purchases."
-                return
-            }
-            let tier = try await APIService.shared.verifyAppleIAP(receiptData: receiptData, productId: id)
+            guard let result = try await storeKit.purchase(product) else { return }
+            let tier = try await APIService.shared.verifyAppleIAP(
+                signedTransaction: result.jws,
+                productId: id
+            )
             authService.updateTier(tier)
             successMessage = "You now have \(tier.displayName) access!"
             try? await Task.sleep(nanoseconds: 1_500_000_000)
@@ -134,13 +133,14 @@ struct PaywallView: View {
         defer { isLoading = false }
         do {
             try await storeKit.restorePurchases()
-            guard !storeKit.purchasedProductIds.isEmpty,
-                  let productId = storeKit.purchasedProductIds.first,
-                  let receiptData = storeKit.getReceiptData() else {
+            guard let entitlement = await storeKit.currentEntitlementJWS() else {
                 successMessage = "No active purchases found."
                 return
             }
-            let tier = try await APIService.shared.verifyAppleIAP(receiptData: receiptData, productId: productId)
+            let tier = try await APIService.shared.verifyAppleIAP(
+                signedTransaction: entitlement.jws,
+                productId: entitlement.productId
+            )
             authService.updateTier(tier)
             successMessage = "Purchases restored!"
         } catch let error as AppError {
