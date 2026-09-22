@@ -147,7 +147,7 @@ private struct GuestPromptView: View {
             Text("Don't lose your recipes!")
                 .font(.headline)
                 .foregroundStyle(.orange)
-            Text("Paste a link below to try one free — then create a free account for \(GuestSession.freeTierExtractions) extractions a month, saved to your library.")
+            Text("Paste a recipe link above to try one free — then create a free account for \(GuestSession.freeTierExtractions) extractions a month, saved to your library.")
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
