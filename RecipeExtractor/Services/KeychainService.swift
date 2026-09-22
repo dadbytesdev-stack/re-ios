@@ -5,7 +5,7 @@ final class KeychainService {
     static let shared = KeychainService()
     private init() {}
 
-    private let service = "com.recipeextractor.app"
+    private let service = "com.dadbytes.recipeextractor"
     private let tokenKey = "auth_token"
 
     func saveToken(_ token: String) {

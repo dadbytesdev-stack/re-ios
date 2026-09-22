@@ -37,8 +37,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		CE000000000000000000003C /* RecipeExtractor.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RecipeExtractor.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		CE000000000000000000003D /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		CE0000000000000000000020 /* RecipeExtractorApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecipeExtractorApp.swift; sourceTree = "<group>"; };
 		CE0000000000000000000021 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		CE0000000000000000000022 /* MainTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabView.swift; sourceTree = "<group>"; };
@@ -67,6 +65,8 @@
 		CE0000000000000000000039 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		CE000000000000000000003A /* UsageBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsageBarView.swift; sourceTree = "<group>"; };
 		CE000000000000000000003B /* Products.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = Products.storekit; sourceTree = "<group>"; };
+		CE000000000000000000003C /* RecipeExtractor.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RecipeExtractor.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		CE000000000000000000003D /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -81,7 +81,7 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		CE0000000000000000000010 /* RecipeExtractor */ = {
+		CE0000000000000000000010 = {
 			isa = PBXGroup;
 			children = (
 				CE0000000000000000000011 /* RecipeExtractor */,
@@ -113,14 +113,6 @@
 				CE000000000000000000003C /* RecipeExtractor.app */,
 			);
 			name = Products;
-			sourceTree = "<group>";
-		};
-		CE000000000000000000003E /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-				CE000000000000000000003D /* StoreKit.framework */,
-			);
-			name = Frameworks;
 			sourceTree = "<group>";
 		};
 		CE0000000000000000000013 /* Models */ = {
@@ -227,6 +219,14 @@
 				CE000000000000000000003A /* UsageBarView.swift */,
 			);
 			path = Common;
+			sourceTree = "<group>";
+		};
+		CE000000000000000000003E /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				CE000000000000000000003D /* StoreKit.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -450,13 +450,17 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
 				CODE_SIGN_ENTITLEMENTS = RecipeExtractor/RecipeExtractor.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_ASSET_PATHS = "\"RecipeExtractor/Products.storekit\"";
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = Z7Q5NZT4ZL;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = RecipeExtractor/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "The Recipe Extractor";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.entertainment";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = NO;
 				INFOPLIST_KEY_UILaunchScreen_Generation = NO;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
@@ -465,8 +469,9 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.recipeextractor.app;
+				PRODUCT_BUNDLE_IDENTIFIER = com.dadbytes.recipeextractor;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -478,13 +483,17 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
 				CODE_SIGN_ENTITLEMENTS = RecipeExtractor/RecipeExtractor.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_ASSET_PATHS = "\"RecipeExtractor/Products.storekit\"";
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = Z7Q5NZT4ZL;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = RecipeExtractor/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "The Recipe Extractor";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.entertainment";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = NO;
 				INFOPLIST_KEY_UILaunchScreen_Generation = NO;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
@@ -493,8 +502,9 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.recipeextractor.app;
+				PRODUCT_BUNDLE_IDENTIFIER = com.dadbytes.recipeextractor;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -523,7 +533,6 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
-
 	};
 	rootObject = CE0000000000000000000001 /* Project object */;
 }
