@@ -17,7 +17,7 @@ struct UsageBarView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
             HStack {
-                Text(tier == .pro ? "Unlimited extractions" : "\(used) of \(limit) extractions used")
+                Text(tier.isUnlimited ? "Unlimited extractions" : "\(used) of \(limit) extractions used")
                     .font(.subheadline.weight(.medium))
                 Spacer()
                 Text(tier.displayName)
@@ -28,7 +28,7 @@ struct UsageBarView: View {
                     .foregroundStyle(tierColor)
                     .clipShape(Capsule())
             }
-            if tier != .pro {
+            if !tier.isUnlimited {
                 GeometryReader { geo in
                     ZStack(alignment: .leading) {
                         RoundedRectangle(cornerRadius: 4)
@@ -50,6 +50,7 @@ struct UsageBarView: View {
         case .free: return .secondary
         case .premium: return .blue
         case .pro: return .purple
+        case .lifetime: return .orange
         }
     }
 }

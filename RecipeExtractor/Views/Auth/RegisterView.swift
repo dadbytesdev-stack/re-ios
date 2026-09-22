@@ -80,7 +80,7 @@ struct RegisterView: View {
                 }
                 .padding(.horizontal, 24)
 
-                Text("Free plan includes 1 extraction per month.\nUpgrade anytime for more.")
+                Text("Free plan includes \(SubscriptionTier.free.monthlyLimit ?? 0) extractions per month, with saving included.\nUpgrade anytime for more.")
                     .font(.caption)
                     .foregroundStyle(.secondary)
                     .multilineTextAlignment(.center)
