@@ -3,6 +3,8 @@ import SwiftUI
 struct RecipeResultView: View {
     let recipe: Recipe
     var onSave: (() -> Void)?
+    var isSaving: Bool = false
+    var saveMessage: String?
     var onExtractNew: (() -> Void)?
 
     var body: some View {
@@ -89,13 +91,26 @@ struct RecipeResultView: View {
                     VStack(spacing: 10) {
                         if let onSave {
                             Button(action: onSave) {
-                                Label("Save Recipe", systemImage: "bookmark.fill")
-                                    .frame(maxWidth: .infinity)
-                                    .padding()
-                                    .background(.orange)
-                                    .foregroundStyle(.white)
-                                    .clipShape(RoundedRectangle(cornerRadius: 12))
+                                HStack(spacing: 8) {
+                                    if isSaving {
+                                        ProgressView().tint(.white)
+                                    } else {
+                                        Label("Save Recipe", systemImage: "bookmark.fill")
+                                    }
+                                }
+                                .frame(maxWidth: .infinity)
+                                .padding()
+                                .background(.orange)
+                                .foregroundStyle(.white)
+                                .clipShape(RoundedRectangle(cornerRadius: 12))
                             }
+                            .disabled(isSaving)
+                        }
+                        if let saveMessage {
+                            Text(saveMessage)
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                                .frame(maxWidth: .infinity)
                         }
                         if let onExtractNew {
                             Button(action: onExtractNew) {

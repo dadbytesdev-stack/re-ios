@@ -1,7 +1,13 @@
 import SwiftUI
 
 struct LoginView: View {
+    /// Shown as the app's first screen (true) or as a sheet from inside the
+    /// app (false). Only the first screen offers the no-account trial —
+    /// once someone has spent it, the sheet should not dangle it again.
+    var showsGuestEntry: Bool = false
+
     @EnvironmentObject var authService: AuthService
+    @EnvironmentObject var guest: GuestSession
     @State private var email = ""
     @State private var password = ""
     @State private var errorMessage: String?
@@ -75,6 +81,25 @@ struct LoginView: View {
                             .fontWeight(.semibold)
                     }
                     .font(.subheadline)
+
+                    // No-account trial. Hidden once it has been used, so the
+                    // button never promises something the next tap refuses.
+                    if showsGuestEntry && guest.hasTrialRemaining {
+                        VStack(spacing: 8) {
+                            Divider().padding(.horizontal, 48)
+                            Button {
+                                guest.isBrowsing = true
+                            } label: {
+                                Text("Try it free — no account needed")
+                                    .font(.subheadline.weight(.semibold))
+                                    .foregroundStyle(.orange)
+                            }
+                            Text("Extract \(GuestSession.trialExtractions) recipe now, then sign in for \(GuestSession.freeTierExtractions) free extractions every month.")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
+                        .padding(.top, 4)
+                    }
                 }
                 .padding(.bottom, 40)
             }

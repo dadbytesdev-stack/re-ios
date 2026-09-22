@@ -30,6 +30,8 @@
 		CE0000000000000000000064 /* RecipeDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE0000000000000000000037 /* RecipeDetailView.swift */; };
 		CE0000000000000000000065 /* PaywallView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE0000000000000000000038 /* PaywallView.swift */; };
 		CE0000000000000000000066 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE0000000000000000000039 /* SettingsView.swift */; };
+		CE00000000000000000000A0 /* GuestSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE00000000000000000000A1 /* GuestSession.swift */; };
+		CE00000000000000000000A2 /* SignInPromptView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE00000000000000000000A3 /* SignInPromptView.swift */; };
 		CE0000000000000000000067 /* UsageBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE000000000000000000003A /* UsageBarView.swift */; };
 		CE0000000000000000000070 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CE0000000000000000000025 /* Assets.xcassets */; };
 		CE0000000000000000000071 /* Products.storekit in Resources */ = {isa = PBXBuildFile; fileRef = CE000000000000000000003B /* Products.storekit */; };
@@ -63,6 +65,8 @@
 		CE0000000000000000000037 /* RecipeDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecipeDetailView.swift; sourceTree = "<group>"; };
 		CE0000000000000000000038 /* PaywallView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaywallView.swift; sourceTree = "<group>"; };
 		CE0000000000000000000039 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		CE00000000000000000000A1 /* GuestSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuestSession.swift; sourceTree = "<group>"; };
+		CE00000000000000000000A3 /* SignInPromptView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInPromptView.swift; sourceTree = "<group>"; };
 		CE000000000000000000003A /* UsageBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsageBarView.swift; sourceTree = "<group>"; };
 		CE000000000000000000003B /* Products.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = Products.storekit; sourceTree = "<group>"; };
 		CE000000000000000000003C /* RecipeExtractor.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RecipeExtractor.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -131,6 +135,7 @@
 				CE0000000000000000000029 /* APIService.swift */,
 				CE000000000000000000002A /* AuthService.swift */,
 				CE000000000000000000002B /* KeychainService.swift */,
+				CE00000000000000000000A1 /* GuestSession.swift */,
 				CE000000000000000000002C /* StoreKitService.swift */,
 			);
 			path = Services;
@@ -217,6 +222,7 @@
 			isa = PBXGroup;
 			children = (
 				CE000000000000000000003A /* UsageBarView.swift */,
+				CE00000000000000000000A3 /* SignInPromptView.swift */,
 			);
 			path = Common;
 			sourceTree = "<group>";
@@ -322,6 +328,8 @@
 				CE0000000000000000000064 /* RecipeDetailView.swift in Sources */,
 				CE0000000000000000000065 /* PaywallView.swift in Sources */,
 				CE0000000000000000000066 /* SettingsView.swift in Sources */,
+				CE00000000000000000000A0 /* GuestSession.swift in Sources */,
+				CE00000000000000000000A2 /* SignInPromptView.swift in Sources */,
 				CE0000000000000000000067 /* UsageBarView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

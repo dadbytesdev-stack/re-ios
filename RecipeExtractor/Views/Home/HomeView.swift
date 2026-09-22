@@ -2,6 +2,7 @@ import SwiftUI
 
 struct HomeView: View {
     @EnvironmentObject var authService: AuthService
+    @EnvironmentObject var guest: GuestSession
     @StateObject private var extractVM = ExtractViewModel()
     @State private var usage: UsageResponse?
     @State private var showPaywall = false
@@ -76,10 +77,23 @@ struct HomeView: View {
 
                     // Result
                     if let recipe = extractVM.extractedRecipe {
-                        RecipeResultView(
-                            recipe: recipe,
-                            onExtractNew: { extractVM.reset() }
-                        )
+                        VStack(spacing: 16) {
+                            // Guests have no account to save against, so the
+                            // nudge takes the place of the save button.
+                            if extractVM.showSignInNudge && !authService.isAuthenticated {
+                                SignInBanner(onSignIn: { showSignIn = true })
+                            }
+
+                            RecipeResultView(
+                                recipe: recipe,
+                                onSave: authService.isAuthenticated && recipe.id != nil
+                                    ? { Task { await extractVM.save() } }
+                                    : nil,
+                                isSaving: extractVM.isSaving,
+                                saveMessage: extractVM.saveMessage,
+                                onExtractNew: { extractVM.reset() }
+                            )
+                        }
                         .padding(.horizontal)
                     } else if !authService.isAuthenticated {
                         GuestPromptView(onSignIn: { showSignIn = true })
@@ -99,12 +113,18 @@ struct HomeView: View {
             .onChange(of: extractVM.showSignIn) { _, show in
                 if show { showSignIn = true; extractVM.showSignIn = false }
             }
+            .onChange(of: authService.isAuthenticated) { _, signedIn in
+                guard signedIn else { return }
+                showSignIn = false
+                extractVM.showSignInNudge = false
+                Task { await loadUsage() }
+            }
             .refreshable { await loadUsage() }
         }
     }
 
     private func extract() async {
-        await extractVM.extract()
+        await extractVM.extract(guest: authService.isAuthenticated ? nil : guest)
         if extractVM.extractedRecipe != nil { await loadUsage() }
     }
 
@@ -121,9 +141,13 @@ private struct GuestPromptView: View {
             Image(systemName: "person.crop.circle.badge.questionmark")
                 .font(.system(size: 52))
                 .foregroundStyle(Color.orange.opacity(0.6))
-            Text("Sign in to save recipes")
+            Text("Make sure you sign in to save!")
                 .font(.title3.bold())
-            Text("Create a free account to extract up to 1 recipe per month and save your history.")
+                .multilineTextAlignment(.center)
+            Text("Don't lose your recipes!")
+                .font(.headline)
+                .foregroundStyle(.orange)
+            Text("Paste a link below to try one free — then create a free account for \(GuestSession.freeTierExtractions) extractions a month, saved to your library.")
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)

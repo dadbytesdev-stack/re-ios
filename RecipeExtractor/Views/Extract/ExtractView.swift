@@ -1,8 +1,12 @@
 import SwiftUI
 
+/// NOTE: unreachable — MainTabView shows HomeView, which does the same job
+/// with the guest flow and usage bar. Kept in the target so it still compiles,
+/// but it duplicates HomeView and should probably be deleted.
 struct ExtractView: View {
     @EnvironmentObject var authService: AuthService
     @EnvironmentObject var storeKit: StoreKitService
+    @EnvironmentObject var guest: GuestSession
     @StateObject private var viewModel = ExtractViewModel()
     @State private var showPaywall = false
 
@@ -19,7 +23,7 @@ struct ExtractView: View {
                             .autocorrectionDisabled()
                             .keyboardType(.URL)
                             .submitLabel(.go)
-                            .onSubmit { Task { await viewModel.extract() } }
+                            .onSubmit { Task { await extract() } }
                         if !viewModel.urlText.isEmpty {
                             Button { viewModel.urlText = "" } label: {
                                 Image(systemName: "xmark.circle.fill")
@@ -32,7 +36,7 @@ struct ExtractView: View {
                     .clipShape(RoundedRectangle(cornerRadius: 12))
 
                     Button {
-                        Task { await viewModel.extract() }
+                        Task { await extract() }
                     } label: {
                         ZStack {
                             RoundedRectangle(cornerRadius: 12)
@@ -64,10 +68,11 @@ struct ExtractView: View {
                 if let recipe = viewModel.extractedRecipe {
                     RecipeResultView(
                         recipe: recipe,
-                        onSave: authService.currentUser?.tier.canSaveRecipes == true ? {
-                            // Already saved server-side; show confirmation
-                            viewModel.reset()
-                        } : nil,
+                        onSave: authService.isAuthenticated && recipe.id != nil
+                            ? { Task { await viewModel.save() } }
+                            : nil,
+                        isSaving: viewModel.isSaving,
+                        saveMessage: viewModel.saveMessage,
                         onExtractNew: { viewModel.reset() }
                     )
                 } else if viewModel.isLoading {
@@ -105,6 +110,10 @@ struct ExtractView: View {
                 if show { showPaywall = true; viewModel.showPaywall = false }
             }
         }
+    }
+
+    private func extract() async {
+        await viewModel.extract(guest: authService.isAuthenticated ? nil : guest)
     }
 }
 
