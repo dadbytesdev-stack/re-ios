@@ -8,7 +8,15 @@ final class StoreKitService: ObservableObject {
     @Published var isLoading = false
 
     /// Non-consumable: bought once, never expires.
-    static let lifetimeProductId = "com.recipeextractor.lifetime"
+    ///
+    /// Not com.recipeextractor.lifetime — that id was created in App Store
+    /// Connect as a non-renewing subscription, which is the wrong type for
+    /// permanent access: StoreKit reports it as .nonRenewable (so the paywall
+    /// would label a one-time purchase "/ month") and, more seriously, leaves
+    /// it out of Transaction.currentEntitlements entirely, so Restore
+    /// Purchases could never find it. A product's type cannot be changed after
+    /// creation and an id can never be reused, hence the new id.
+    static let lifetimeProductId = "com.recipeextractor.pro.lifetime"
 
     /// Products offered on the paywall, cheapest first.
     ///

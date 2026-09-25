@@ -30,13 +30,13 @@
 		CE0000000000000000000064 /* RecipeDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE0000000000000000000037 /* RecipeDetailView.swift */; };
 		CE0000000000000000000065 /* PaywallView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE0000000000000000000038 /* PaywallView.swift */; };
 		CE0000000000000000000066 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE0000000000000000000039 /* SettingsView.swift */; };
-		CE00000000000000000000A0 /* GuestSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE00000000000000000000A1 /* GuestSession.swift */; };
-		CE00000000000000000000A2 /* SignInPromptView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE00000000000000000000A3 /* SignInPromptView.swift */; };
 		CE0000000000000000000067 /* UsageBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE000000000000000000003A /* UsageBarView.swift */; };
 		CE0000000000000000000070 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CE0000000000000000000025 /* Assets.xcassets */; };
-		CE00000000000000000000A4 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = CE00000000000000000000A5 /* PrivacyInfo.xcprivacy */; };
 		CE0000000000000000000071 /* Products.storekit in Resources */ = {isa = PBXBuildFile; fileRef = CE000000000000000000003B /* Products.storekit */; };
 		CE0000000000000000000080 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE000000000000000000003D /* StoreKit.framework */; };
+		CE00000000000000000000A0 /* GuestSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE00000000000000000000A1 /* GuestSession.swift */; };
+		CE00000000000000000000A2 /* SignInPromptView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE00000000000000000000A3 /* SignInPromptView.swift */; };
+		CE00000000000000000000A4 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = CE00000000000000000000A5 /* PrivacyInfo.xcprivacy */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -66,13 +66,13 @@
 		CE0000000000000000000037 /* RecipeDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecipeDetailView.swift; sourceTree = "<group>"; };
 		CE0000000000000000000038 /* PaywallView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaywallView.swift; sourceTree = "<group>"; };
 		CE0000000000000000000039 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
-		CE00000000000000000000A1 /* GuestSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuestSession.swift; sourceTree = "<group>"; };
-		CE00000000000000000000A3 /* SignInPromptView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInPromptView.swift; sourceTree = "<group>"; };
 		CE000000000000000000003A /* UsageBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsageBarView.swift; sourceTree = "<group>"; };
 		CE000000000000000000003B /* Products.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = Products.storekit; sourceTree = "<group>"; };
-		CE00000000000000000000A5 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		CE000000000000000000003C /* RecipeExtractor.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RecipeExtractor.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CE000000000000000000003D /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
+		CE00000000000000000000A1 /* GuestSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuestSession.swift; sourceTree = "<group>"; };
+		CE00000000000000000000A3 /* SignInPromptView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInPromptView.swift; sourceTree = "<group>"; };
+		CE00000000000000000000A5 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -266,7 +266,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1500;
-				LastUpgradeCheck = 1500;
+				LastUpgradeCheck = 2660;
 				TargetAttributes = {
 					CE0000000000000000000002 = {
 						CreatedOnToolsVersion = 15.0;
@@ -376,6 +376,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = Z7Q5NZT4ZL;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
@@ -398,6 +399,7 @@
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
@@ -438,6 +440,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = Z7Q5NZT4ZL;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
@@ -452,6 +455,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				VALIDATE_PRODUCT = YES;
 			};
@@ -468,7 +472,6 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 4;
 				DEVELOPMENT_ASSET_PATHS = "\"RecipeExtractor/Products.storekit\"";
-				DEVELOPMENT_TEAM = Z7Q5NZT4ZL;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = RecipeExtractor/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "The Recipe Extractor";
@@ -501,7 +504,6 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 4;
 				DEVELOPMENT_ASSET_PATHS = "\"RecipeExtractor/Products.storekit\"";
-				DEVELOPMENT_TEAM = Z7Q5NZT4ZL;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = RecipeExtractor/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "The Recipe Extractor";

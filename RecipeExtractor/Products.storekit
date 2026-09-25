@@ -5,7 +5,7 @@
     {
       "displayPrice": "49.99",
       "familyShareable": false,
-      "internalID": "44444444-4444-4444-4444-444444444444",
+      "internalID": "55555555-5555-5555-5555-555555555555",
       "localizations": [
         {
           "description": "Unlimited recipe extractions forever. One payment, no subscription.",
@@ -13,7 +13,7 @@
           "locale": "en_US"
         }
       ],
-      "productID": "com.recipeextractor.lifetime",
+      "productID": "com.recipeextractor.pro.lifetime",
       "referenceName": "Lifetime Access",
       "type": "NonConsumable"
     }
