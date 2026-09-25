@@ -45,7 +45,7 @@ targets:
         # Bump CURRENT_PROJECT_VERSION for every upload — App Store Connect
         # rejects a build number it has already seen.
         MARKETING_VERSION: "1.1"
-        CURRENT_PROJECT_VERSION: "4"
+        CURRENT_PROJECT_VERSION: "5"
 
         # Signing. Team ID is required here — leaving it blank produces an
         # unsigned project that cannot archive.

@@ -470,7 +470,7 @@
 				CODE_SIGN_ENTITLEMENTS = RecipeExtractor/RecipeExtractor.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 4;
+				CURRENT_PROJECT_VERSION = 5;
 				DEVELOPMENT_ASSET_PATHS = "\"RecipeExtractor/Products.storekit\"";
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = RecipeExtractor/Info.plist;
@@ -502,7 +502,7 @@
 				CODE_SIGN_ENTITLEMENTS = RecipeExtractor/RecipeExtractor.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 4;
+				CURRENT_PROJECT_VERSION = 5;
 				DEVELOPMENT_ASSET_PATHS = "\"RecipeExtractor/Products.storekit\"";
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = RecipeExtractor/Info.plist;
