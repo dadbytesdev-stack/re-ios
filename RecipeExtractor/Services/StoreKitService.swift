@@ -20,19 +20,29 @@ final class StoreKitService: ObservableObject {
 
     /// Products offered on the paywall, cheapest first.
     ///
-    /// com.recipeextractor.pro.yearly is deliberately absent — it is no longer
-    /// sold now that Lifetime exists. Anyone already on it keeps it: removing a
-    /// product from this list only stops it being offered, it does not revoke
-    /// an active subscription, and `entitlementPriority` below still ranks it.
+    /// Only Premium and Lifetime are sold. Both Pro products —
+    /// com.recipeextractor.pro.monthly and com.recipeextractor.pro.yearly —
+    /// are deliberately absent: an unlimited monthly plan sitting between
+    /// Premium and Lifetime gives a first-time buyer three prices to weigh
+    /// instead of two, and Pro has never been purchased.
+    ///
+    /// Anyone already on either Pro product keeps it. Removing an id from this
+    /// list only stops it being *offered*: it does not revoke an active
+    /// subscription, `entitlementPriority` below still ranks both Pro ids above
+    /// Premium, and `currentEntitlementJWS()` reads
+    /// Transaction.currentEntitlements rather than this list, so Restore
+    /// Purchases still reports Pro correctly.
     static let productIds: Set<String> = [
         "com.recipeextractor.premium.monthly",
-        "com.recipeextractor.pro.monthly",
         lifetimeProductId
     ]
 
     /// Higher wins when someone holds more than one entitlement — a lifetime
     /// buyer who also has a lapsing subscription must be reported as Lifetime,
     /// not downgraded to whatever Transaction.currentEntitlements yields first.
+    ///
+    /// Pro is still ranked even though it is no longer sold, because existing
+    /// subscribers must not be silently demoted to Premium.
     private static func entitlementPriority(_ productId: String) -> Int {
         switch productId {
         case lifetimeProductId: return 3
