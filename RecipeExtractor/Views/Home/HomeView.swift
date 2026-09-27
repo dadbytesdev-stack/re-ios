@@ -104,7 +104,10 @@ struct HomeView: View {
                 .padding(.bottom, 40)
             }
             .navigationTitle("Recipe Extractor")
-            .sheet(isPresented: $showPaywall) { PaywallView() }
+            // Every paywall this screen presents is presented because an
+            // extraction was refused — either the usage bar's "Upgrade for
+            // more" or AppError.requiresUpgrade from the view model.
+            .sheet(isPresented: $showPaywall) { PaywallView(context: .quotaReached) }
             .sheet(isPresented: $showSignIn) { LoginView() }
             .task { await loadUsage() }
             .onChange(of: extractVM.showPaywall) { _, show in
@@ -134,34 +137,37 @@ struct HomeView: View {
     }
 }
 
+/// Shown to a signed-out visitor who has not extracted anything yet.
+///
+/// The URL box is directly above this, so the job here is to explain what to
+/// paste and that it is free — not to sell an account. The account ask is
+/// deliberately the quietest element: it is answered better after the first
+/// recipe exists (see SignInBanner), when there is something to lose.
 private struct GuestPromptView: View {
     let onSignIn: () -> Void
     var body: some View {
-        VStack(spacing: 20) {
-            Image(systemName: "person.crop.circle.badge.questionmark")
+        VStack(spacing: 16) {
+            Image(systemName: "link.badge.plus")
                 .font(.system(size: 52))
                 .foregroundStyle(Color.orange.opacity(0.6))
-            Text("Make sure you sign in to save!")
+            Text("Paste a recipe link above")
                 .font(.title3.bold())
                 .multilineTextAlignment(.center)
-            Text("Don't lose your recipes!")
+            Text("Your first one is free — no account needed")
                 .font(.headline)
                 .foregroundStyle(.orange)
-            Text("Paste a recipe link above to try one free — then create a free account for \(GuestSession.freeTierExtractions) extractions a month, saved to your library.")
+                .multilineTextAlignment(.center)
+            Text("You get the ingredients and the steps, without the story in between. Create a free account afterwards to keep them and get \(GuestSession.freeTierExtractions) extractions a month.")
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
                 .padding(.horizontal, 32)
             Button(action: onSignIn) {
-                Text("Sign In / Create Account")
-                    .font(.headline)
-                    .foregroundStyle(.white)
-                    .frame(maxWidth: .infinity)
-                    .padding()
-                    .background(.orange)
-                    .clipShape(RoundedRectangle(cornerRadius: 12))
+                Text("I already have an account")
+                    .font(.subheadline.weight(.semibold))
+                    .foregroundStyle(.orange)
             }
-            .padding(.horizontal, 40)
+            .padding(.top, 4)
         }
         .padding(.top, 20)
     }
