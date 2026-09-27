@@ -33,9 +33,20 @@ final class GuestSession: ObservableObject {
         didSet { defaults.set(isBrowsing, forKey: Keys.browsing) }
     }
 
+    /// True once the app has opened straight into the trial on a first launch.
+    ///
+    /// Persisted and never cleared, not even by `end()`. That is the point: the
+    /// auto-start must happen exactly once per install, so that signing out
+    /// returns to the login screen instead of silently handing out another
+    /// no-account extraction on every launch.
+    @Published private(set) var hasAutoStarted: Bool {
+        didSet { defaults.set(hasAutoStarted, forKey: Keys.autoStarted) }
+    }
+
     private enum Keys {
         static let used = "guest.extractionsUsed"
         static let browsing = "guest.isBrowsing"
+        static let autoStarted = "guest.hasAutoStarted"
     }
 
     private let defaults: UserDefaults
@@ -44,13 +55,26 @@ final class GuestSession: ObservableObject {
         self.defaults = defaults
         self.extractionsUsed = defaults.integer(forKey: Keys.used)
         self.isBrowsing = defaults.bool(forKey: Keys.browsing)
+        self.hasAutoStarted = defaults.bool(forKey: Keys.autoStarted)
     }
 
     var hasTrialRemaining: Bool { extractionsUsed < Self.trialExtractions }
 
+    /// Opens the app in guest mode on a cold first launch, so the first thing a
+    /// new install shows is the URL box rather than a sign-in form. Idempotent,
+    /// and only ever fires once per install.
+    func startTrialOnFirstLaunch() {
+        guard !hasAutoStarted, hasTrialRemaining else { return }
+        hasAutoStarted = true
+        isBrowsing = true
+    }
+
     func recordExtraction() { extractionsUsed += 1 }
 
     /// The trial is over once there is an account to extract against.
+    ///
+    /// `hasAutoStarted` deliberately survives this, so a later sign-out lands
+    /// on the login screen rather than back in a guest trial.
     func end() {
         isBrowsing = false
         extractionsUsed = 0
