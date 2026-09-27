@@ -17,6 +17,18 @@ struct ContentView: View {
         }
         .animation(.easeInOut(duration: 0.25), value: authService.isAuthenticated)
         .animation(.easeInOut(duration: 0.25), value: guest.isBrowsing)
+        .onAppear {
+            // First launch opens on the URL box rather than on a sign-in form:
+            // the app does its one useful thing before asking for anything, and
+            // the account is requested after the first recipe exists, when
+            // there is finally something to save.
+            //
+            // startTrialOnFirstLaunch() is a no-op on every later launch, so
+            // signing out still returns here to the login screen.
+            if !authService.isAuthenticated {
+                guest.startTrialOnFirstLaunch()
+            }
+        }
         .onChange(of: authService.isAuthenticated) { _, signedIn in
             // Signing in (or creating an account) retires the trial.
             if signedIn { guest.end() }
