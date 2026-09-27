@@ -14,14 +14,21 @@ struct LoginView: View {
     @State private var isLoading = false
     @State private var showRegister = false
 
+    /// True when the no-account trial is actually on offer on this screen.
+    /// Drives the visual hierarchy: whichever action is the better one for a
+    /// first-time visitor is the filled button, and there is only ever one.
+    private var offersGuestEntry: Bool {
+        showsGuestEntry && guest.hasTrialRemaining
+    }
+
     var body: some View {
         NavigationStack {
             ScrollView {
-                VStack(spacing: 32) {
+                VStack(spacing: 28) {
                     // Logo
                     VStack(spacing: 12) {
                         Image(systemName: "fork.knife.circle.fill")
-                            .font(.system(size: 72))
+                            .font(.system(size: 64))
                             .foregroundStyle(.orange)
                         Text("Recipe Extractor")
                             .font(.largeTitle.bold())
@@ -29,10 +36,44 @@ struct LoginView: View {
                             .font(.subheadline)
                             .foregroundStyle(.secondary)
                     }
-                    .padding(.top, 48)
+                    .padding(.top, 40)
 
-                    // Form
+                    // No-account trial, first and primary. Hidden once it has
+                    // been used, so the button never promises something the
+                    // next tap refuses.
+                    if offersGuestEntry {
+                        VStack(spacing: 10) {
+                            Button {
+                                guest.isBrowsing = true
+                            } label: {
+                                ZStack {
+                                    RoundedRectangle(cornerRadius: 12)
+                                        .fill(.orange)
+                                    Text("Extract a recipe now")
+                                        .font(.headline)
+                                        .foregroundStyle(.white)
+                                }
+                                .frame(maxWidth: .infinity)
+                                .frame(height: 50)
+                            }
+
+                            Text("Free, no account needed. Sign up afterwards to keep it and get \(GuestSession.freeTierExtractions) extractions every month.")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                                .multilineTextAlignment(.center)
+                        }
+                        .padding(.horizontal, 24)
+                    }
+
+                    // Existing account. Sits below the offer and is styled as
+                    // the secondary action whenever the trial is available.
                     VStack(spacing: 14) {
+                        if offersGuestEntry {
+                            Text("Already have an account?")
+                                .font(.footnote.weight(.semibold))
+                                .foregroundStyle(.secondary)
+                        }
+
                         TextField("Email address", text: $email)
                             .textFieldStyle(.roundedBorder)
                             .textInputAutocapitalization(.never)
@@ -54,13 +95,13 @@ struct LoginView: View {
                         } label: {
                             ZStack {
                                 RoundedRectangle(cornerRadius: 12)
-                                    .fill(.orange)
+                                    .fill(offersGuestEntry ? Color.orange.opacity(0.12) : Color.orange)
                                 if isLoading {
-                                    ProgressView().tint(.white)
+                                    ProgressView().tint(offersGuestEntry ? .orange : .white)
                                 } else {
                                     Text("Sign In")
                                         .font(.headline)
-                                        .foregroundStyle(.white)
+                                        .foregroundStyle(offersGuestEntry ? .orange : .white)
                                 }
                             }
                             .frame(maxWidth: .infinity)
@@ -81,25 +122,6 @@ struct LoginView: View {
                             .fontWeight(.semibold)
                     }
                     .font(.subheadline)
-
-                    // No-account trial. Hidden once it has been used, so the
-                    // button never promises something the next tap refuses.
-                    if showsGuestEntry && guest.hasTrialRemaining {
-                        VStack(spacing: 8) {
-                            Divider().padding(.horizontal, 48)
-                            Button {
-                                guest.isBrowsing = true
-                            } label: {
-                                Text("Try it free — no account needed")
-                                    .font(.subheadline.weight(.semibold))
-                                    .foregroundStyle(.orange)
-                            }
-                            Text("Extract \(GuestSession.trialExtractions) recipe now, then sign in for \(GuestSession.freeTierExtractions) free extractions every month.")
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
-                        }
-                        .padding(.top, 4)
-                    }
                 }
                 .padding(.bottom, 40)
             }
