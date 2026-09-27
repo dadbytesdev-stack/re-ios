@@ -1,7 +1,20 @@
 import SwiftUI
 import StoreKit
 
+/// Why the paywall is on screen. A sheet that opens because an extraction was
+/// just refused is answering a question the user already has; one opened from
+/// Settings has to raise the subject itself. The copy differs accordingly.
+enum PaywallContext {
+    /// Opened from Settings or another browsing entry point.
+    case browse
+    /// Opened because the monthly limit has just been hit.
+    case quotaReached
+}
+
 struct PaywallView: View {
+    /// Defaults to `.browse` so existing presentations compile unchanged.
+    var context: PaywallContext = .browse
+
     @EnvironmentObject var authService: AuthService
     @EnvironmentObject var storeKit: StoreKitService
     @Environment(\.dismiss) private var dismiss
@@ -21,18 +34,64 @@ struct PaywallView: View {
         selectedProduct?.type == .nonConsumable
     }
 
+    /// True only once StoreKit has actually returned a one-time product. While
+    /// Lifetime is in App Store review it will not load, and the sheet must not
+    /// describe a plan that cannot be bought yet.
+    private var offersLifetime: Bool {
+        storeKit.products.contains { $0.type == .nonConsumable }
+    }
+
+    private var headerIcon: String {
+        switch context {
+        case .quotaReached: return "hourglass"
+        case .browse: return "crown.fill"
+        }
+    }
+
+    private var headline: String {
+        switch context {
+        case .quotaReached:
+            if let limit = authService.currentUser?.tier.monthlyLimit {
+                return "That's all \(limit) extractions this month"
+            }
+            return "You've used this month's extractions"
+        case .browse:
+            return "Keep every recipe you find"
+        }
+    }
+
+    private var subhead: String {
+        switch context {
+        case .quotaReached:
+            return "Upgrade and your next extraction works straight away. Everything you have already saved stays exactly where it is."
+        case .browse:
+            return "You're on \(authService.currentUser?.tier.displayName ?? "Free") — here's what more looks like."
+        }
+    }
+
+    /// The price belongs on the button: it is the one thing someone needs to
+    /// know before tapping, and hiding it behind "Subscribe Now" only delays
+    /// the decision to the App Store sheet.
+    private var ctaTitle: String {
+        guard let product = selectedProduct else { return "Choose a plan" }
+        if selectionIsOneTime { return "Unlock forever — \(product.displayPrice)" }
+        let period = product.id.contains("yearly") ? "a year" : "a month"
+        return "Continue — \(product.displayPrice) \(period)"
+    }
+
     var body: some View {
         NavigationStack {
             ScrollView {
                 VStack(spacing: 28) {
                     // Header
                     VStack(spacing: 8) {
-                        Image(systemName: "crown.fill")
+                        Image(systemName: headerIcon)
                             .font(.system(size: 48))
                             .foregroundStyle(.orange)
-                        Text("Upgrade Your Plan")
+                        Text(headline)
                             .font(.title.bold())
-                        Text("You're on \(authService.currentUser?.tier.displayName ?? "Free") — here's what more looks like")
+                            .multilineTextAlignment(.center)
+                        Text(subhead)
                             .font(.subheadline)
                             .foregroundStyle(.secondary)
                             .multilineTextAlignment(.center)
@@ -42,13 +101,15 @@ struct PaywallView: View {
                     // Feature highlights
                     VStack(alignment: .leading, spacing: 12) {
                         FeatureRow(icon: "wand.and.stars",
-                                   text: "Premium: \(SubscriptionTier.premium.monthlyLimit ?? 0) extractions a month")
-                        FeatureRow(icon: "infinity",
-                                   text: "Pro: unlimited extractions, billed monthly")
-                        FeatureRow(icon: "checkmark.seal.fill",
-                                   text: "Lifetime: unlimited forever, paid once")
+                                   text: "\(SubscriptionTier.premium.monthlyLimit ?? 0) extractions a month")
+                        if offersLifetime {
+                            FeatureRow(icon: "checkmark.seal.fill",
+                                       text: "Or pay once for unlimited, forever")
+                        }
                         FeatureRow(icon: "bookmark.fill",
-                                   text: "Every plan saves your recipe library")
+                                   text: "Every recipe saved to your library")
+                        FeatureRow(icon: "text.alignleft",
+                                   text: "Ingredients and steps only — no ads, no clutter")
                     }
                     .padding(.horizontal, 32)
 
@@ -102,7 +163,7 @@ struct PaywallView: View {
                                 if isLoading {
                                     ProgressView().tint(.white)
                                 } else {
-                                    Text(selectionIsOneTime ? "Buy Lifetime Access" : "Subscribe Now")
+                                    Text(ctaTitle)
                                         .font(.headline).foregroundStyle(.white)
                                 }
                             }
@@ -222,6 +283,16 @@ private struct ProductCard: View {
         return isYearly ? "/ year" : "/ month"
     }
 
+    /// Deliberately not a percentage.
+    ///
+    /// This badge used to read "SAVE 17%", which is only true of $99.99/year
+    /// against $9.99/month. Against a $14.99/year plan next to $2.99/month the
+    /// real saving is 58%, so the constant was both wrong and wrong in our own
+    /// favour — a discount claim has to be arithmetic on the two prices being
+    /// compared, not a string. Until it is computed from the real pair, say
+    /// nothing numeric.
+    private var yearlyBadge: String { "BILLED YEARLY" }
+
     var body: some View {
         Button(action: onSelect) {
             HStack {
@@ -229,7 +300,7 @@ private struct ProductCard: View {
                     HStack(spacing: 6) {
                         Text(product.displayName).font(.headline)
                         if isYearly {
-                            Text("SAVE 17%").font(.caption2.bold())
+                            Text(yearlyBadge).font(.caption2.bold())
                                 .padding(.horizontal, 6).padding(.vertical, 2)
                                 .background(Color.green.opacity(0.15)).foregroundStyle(.green)
                                 .clipShape(Capsule())
