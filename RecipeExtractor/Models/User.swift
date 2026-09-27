@@ -35,10 +35,15 @@ enum SubscriptionTier: String, Codable, CaseIterable {
     /// enforces them — this copy only drives what the UI says. If the two ever
     /// disagree, the server wins and the user sees a limit they were not
     /// warned about, so keep them in step.
+    ///
+    /// Free is 5 rather than 10: a free allowance nobody exhausts means the
+    /// paywall is never reached, however well placed it is. Premium is 100
+    /// rather than 20 so the upgrade is a change in kind — 20 was close enough
+    /// to free that there was nothing to buy.
     var monthlyLimit: Int? {
         switch self {
-        case .free: return 10
-        case .premium: return 20
+        case .free: return 5
+        case .premium: return 100
         case .pro, .lifetime: return nil
         }
     }
